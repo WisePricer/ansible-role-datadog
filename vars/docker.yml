@@ -1,0 +1,84 @@
+---
+# cgroup memory management needs to be enabled on host
+#  Debian:
+#    Add to boot options: cgroup_enable=memory swapaccount=1
+
+# Can run on host or in container https://github.com/DataDog/docker-dd-agent
+# Container on Debian
+# -v /sys/fs/cgroup/:/host/sys/fs/cgroup:ro
+# Container on Moby Linux
+# -v /sys/fs/cgroup/:/host/sys/fs/cgroup:ro
+
+# Container on Amazon Linux
+#docker run -d --name dd-agent \
+#  -v /var/run/docker.sock:/var/run/docker.sock:ro \
+#  -v /proc/:/host/proc/:ro \
+#  -v /cgroup/:/host/sys/fs/cgroup:ro \
+#  -e API_KEY={your_api_key_here} \
+#  -e SD_BACKEND=docker \
+#  datadog/docker-dd-agent
+
+# or Alpine version
+#  datadog/docker-dd-agent:latest-alpine
+
+# Add local config dir
+# -v /opt/dd-agent-conf.d:/conf.d:ro
+# Other env vars can be passed with -e
+
+# On host
+# usermod -a -G docker dd-agent
+# docker_daemon.yaml
+
+datadog_checks:
+  docker_daemon:
+    init_config:
+    # Change the root directory to look at to get cgroup statistics. Useful when running inside a
+    # container with host directories mounted on a different folder. Default: /.
+    # Example for the docker-dd-agent container:
+    # docker_root: /host
+    instances:
+      - ## Daemon and system configuration
+        url: "unix://var/run/docker.sock"
+
+        # You can add extra tags to your Docker metrics with the tags list option.
+        # Example: ["extra_tag", "env:testing"]
+        #
+        # tags: []
+
+
+  # Custom metrics tagging
+  # Define which Docker tags to apply on metrics.
+  # Since it impacts the aggregation, modify it carefully (only if you really need it).
+  #
+  # Tags for performance metrics.
+  # Available:
+  #   - image_name: Name of the image (example: "nginx")
+  #   - image_tag: Tag of the image (example: "latest")
+  #   - docker_image: LEGACY. The full image name:tag string (example: "nginx:latest")
+  #   - container_name: Name of the container (example: "boring_euclid")
+  #   - container_command: Command ran by the container (example: "echo 1")
+  #   - container_id: Id of the container
+  #
+  # performance_tags: ["container_name", "image_name", "image_tag", "docker_image"]
+
+  # Tags for containers count metrics.
+  # Available: ["image_name", "image_tag", "docker_image", "container_command"]
+  #
+  # container_tags: ["image_name", "image_tag", "docker_image"]
+
+  # List of container label names that should be collected and sent as tags.
+  # Default to None
+  # Example:
+  # collect_labels_as_tags: ["com.docker.compose.service", "com.docker.compose.project"]
+  # List of docker event attributes to add as tags of the datadog events
+  # Defaults to None.
+  #
+
+  ## Rate Filtering
+  ##
+
+  # Allows ad-hoc spike filtering if the system reports incorrect metrics.
+  # This will drop points if the computed rate is higher than the cap value
+  # capped_metrics:
+  #   docker.cpu.user: 1000
+  #   docker.cpu.system: 1000

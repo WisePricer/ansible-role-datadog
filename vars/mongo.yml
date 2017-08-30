@@ -1,0 +1,18 @@
+---
+datadog_checks:
+  mongo:
+    init_config:
+    instances:
+      # The format for the server entry below is:
+      # server: mongodb://username:password@host:port/database where database will default to admin
+      #- server: mongodb://datadog:d@T@d0g@localhost:27017/admin
+      - server: mongodb://localhost:27017/admin
+        tags:
+          - "{{ env }}, {{ service }}, {{ product }}, {{ role }}"
+        additional_metrics:
+          #- durability
+          #- locks
+          - top
+          #- metrics.commands
+          #- tcmalloc
+          #- collection

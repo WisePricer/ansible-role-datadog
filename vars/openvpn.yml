@@ -1,0 +1,5 @@
+---
+# Write custom check
+# OpenVPN metrics to collect:
+#  licensing stats
+# Bandwidth (in/out), active users, is running,

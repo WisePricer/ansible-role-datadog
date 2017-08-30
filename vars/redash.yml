@@ -1,0 +1,15 @@
+---
+# API Key must have Super Admin access
+datadog_checks:
+  redash:
+    init_config:
+      default_timeout: 5
+    instances:
+      - url: http://localhost/status.json?api_key=<STUB_KEY>
+
+# Services used:
+# postgres in core
+# nginx in core
+# redis in core
+# celery
+# gunicorn in core

@@ -1,0 +1,22 @@
+---
+datadog_api_key: "29240f22f061ff9037d30492533b6a57"
+datadog_config:
+  tags: "{{ service }}, {{ product }}, {{ role }}"
+  log_level: INFO
+  apm_enabled: "true" # has to be set as a string
+
+datadog_config_ex:
+  trace.config:
+    env: dev
+  trace.concentrator:
+    extra_aggregators: version
+
+datadog_checks:
+  process:
+    init_config:
+    instances:
+      - name: "{{ product }}"
+        search_string: ["{{ product }}"]
+
+mongo_pass: 12345
+mongo_user: datadog

@@ -1,0 +1,17 @@
+---
+datadog_checks:
+  rabbitmq:
+    init_config:
+    instances:
+      - rabbitmq_api_url: http://localhost:15672/api/
+        rabbitmq_user: guest
+        rabbitmq_pass: guest
+        tag_families: true
+        nodes:
+          - rabbit@localhost
+        #queues:
+        #  - queue1
+        #vhosts:
+        #  - vhost1
+        tags:
+          - "{{ env }}, {{ service }}, {{ product }}, {{ role }}"
