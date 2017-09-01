@@ -1,0 +1,36 @@
+---
+# Required for mongodb_user
+#- name: install pymongo
+#  pip:
+#    name: pymongo
+
+# Create user for datadog
+#- mongodb_user:
+#    database: admin
+#    name: "datadog"
+#    password: "d@T@d0g"
+#    roles: read,clusterMonitor
+#    state: present
+
+- name: Setup Datadog Monitoring for MongoDB
+  include_role:
+    name: datadog
+    #vars_from: mongo
+  vars:
+    datadog_checks:
+      mongo:
+        init_config:
+        instances:
+          # The format for the server entry below is:
+          # server: mongodb://username:password@host:port/database where database will default to admin
+          #- server: mongodb://{{ mongo_user }}:{{ mongo_pass }}@localhost:27017/admin
+          - server: mongodb://localhost:27017/admin
+            tags:
+              - "{{ env }}, {{ service }}, {{ product }}, {{ role }}"
+            additional_metrics:
+              #- durability
+              #- locks
+              - top
+              #- metrics.commands
+              #- tcmalloc
+              #- collection

@@ -23,6 +23,7 @@
 #cat >>SUDOER > /etc/sudoers.d/dd-agent-openvpn
 #dd-agent ALL=NOPASSWD: /usr/local/openvpn_as/scripts/sacli
 #SUDOER
+
 datadog_check_agents:
   - openvpn
 datadog_checks:

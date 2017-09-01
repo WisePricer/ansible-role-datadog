@@ -1,0 +1,16 @@
+---
+- name: Setup Datadog Monitoring for ElasticSearch
+  include_role:
+    name: datadog
+    #vars_from: elasticsearch
+  vars:
+    datadog_checks:
+      elastic:
+        init_config:
+        instances:
+          - url: "http://localhost:9200"
+            cluster_stats: false
+            pshard_stats: true
+            pending_task_stats: true
+            tags:
+              - "{{ env }}, {{ service }}, {{ product }}, {{ role }}"

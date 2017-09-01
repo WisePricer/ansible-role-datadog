@@ -1,0 +1,14 @@
+---
+- name: Setup Datadog Monitoring for Redis
+  include_role:
+    name: datadog
+    #vars_from: redisdb
+  vars:
+    datadog_checks:
+      redisdb:
+        init_config:
+        instances:
+          - host: localhost
+            port: 6379
+            tags:
+              - "{{ env }}, {{ service }}, {{ product }}, {{ role }}"

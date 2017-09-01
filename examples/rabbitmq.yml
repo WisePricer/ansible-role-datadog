@@ -1,0 +1,42 @@
+---
+# Enable the rabbitmq_management plugin
+- name: Enable RabbitMQ management plugin
+  rabbitmq_plugin:
+    names: rabbitmq_management
+    state: enabled
+  notify:
+    - restart rabbitmq
+
+# Create a user for monitoring. If not using guest account
+#   tag: monitoring
+#   Not sure if read access is needed. Probably not
+#- name: add datadog user
+#  rabbitmq_user:
+#    user: datadog
+#    password: d@T@d0g
+#    tags: monitoring
+#    vhost: /
+#    read_priv: .*
+#    state: present
+
+- name: Setup Datadog Monitoring for RabbitMQ
+  include_role:
+    name: datadog
+    #vars_from: rabbitmq
+  vars:
+    datadog_checks:
+      rabbitmq:
+        init_config:
+        instances:
+          - rabbitmq_api_url: http://localhost:15672/api/
+            rabbitmq_user: guest
+            rabbitmq_pass: guest
+            tag_families: true
+            nodes:
+              - rabbit@localhost
+            #queues:
+            #  - queue1
+            #vhosts:
+            #  - vhost1
+            tags:
+              - "{{ env }}, {{ service }}, {{ product }}, {{ role }}"

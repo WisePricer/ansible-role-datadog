@@ -8,6 +8,8 @@
 
 import time
 import requests
+import warnings
+from requests.packages.urllib3.exceptions import InsecureRequestWarning
 
 from checks import AgentCheck
 from hashlib import md5
@@ -26,11 +28,16 @@ class HTTPCheck(AgentCheck):
         # Use a hash of the URL as an aggregation key
         aggregation_key = md5(url).hexdigest()
 
+        #https://github.com/requests/requests/issues/2214
+        #from requests.packages.urllib3.exceptions import InsecureRequestWarning
+        #requests.packages.urllib3.disable_warnings(InsecureRequestWarning)
         # Check the URL
         start_time = time.time()
         try:
-            r = requests.get(url, timeout=timeout)
-            end_time = time.time()            
+            with warnings.catch_warnings():
+                warnings.filterwarnings("ignore", category=InsecureRequestWarning)
+                r = requests.get(url, timeout=timeout, verify=False)
+            end_time = time.time()
         except requests.exceptions.Timeout as e:
             # If there's a timeout
             self.timeout_event(url, timeout, aggregation_key)
@@ -75,4 +82,3 @@ class HTTPCheck(AgentCheck):
             if check.has_events():
                 print 'Events: %s' % (check.get_events())
             print 'Metrics: %s' % (check.get_metrics())
-

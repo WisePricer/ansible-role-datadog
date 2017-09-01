@@ -1,0 +1,27 @@
+---
+- name: Load Monitoring variables
+  include_vars:
+    file: monitoring.yml
+
+# Ensure dd-agent has sudo rights to run sacli
+- name: Datadog access to OpenVPN CLI
+  template:
+    src: sudo-dd-agent-openvpn.j2
+    dest: /etc/sudoers.d/dd-agent-openvpn
+    owner: root
+    group: root
+    mode: 0440
+
+- name: Setup Datadog Monitoring for OpenVPN
+  include_role:
+    name: datadog
+  vars:
+    datadog_check_agents:
+      - openvpn
+    datadog_checks:
+      openvpn:
+        init_config:
+          metric_prefix: openvpn
+          sacli_path: "{{ sacli_path }}"
+        instances:
+          [{}]
