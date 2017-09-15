@@ -1,0 +1,14 @@
+---
+- name: Load OpenVPN SA monitoring variables
+  include_vars:
+    file: openvpn-settings.yml
+  when: "'openvpn' in datadog_checks"
+
+- name: Datadog access to OpenVPN SA CLI
+  template:
+    src: sudo-dd-agent-openvpn.j2
+    dest: /etc/sudoers.d/dd-agent-openvpn
+    owner: root
+    group: root
+    mode: 0440
+  when: "'openvpn' in datadog_checks"

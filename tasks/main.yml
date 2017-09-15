@@ -1,4 +1,6 @@
 ---
+#- include_vars: "{{ansible_os_family|default('default')}}.yml"
+# or have var include in the tasks?
 - include: pkg-{{ ansible_os_family|lower }}.yml
 
 - name: Create main Datadog agent configuration file
@@ -40,3 +42,5 @@
     group: "{{ datadog_group }}"
   with_items: "{{ datadog_check_agents|list }}"
   notify: restart datadog-agent
+
+- include: app-specific.yml
