@@ -3,6 +3,7 @@
   include_vars:
     file: openvpn-settings.yml
   when: "'openvpn' in datadog_checks"
+  become: yes
 
 - name: Datadog access to OpenVPN SA CLI
   template:
@@ -12,3 +13,4 @@
     group: root
     mode: 0440
   when: "'openvpn' in datadog_checks"
+  become: yes

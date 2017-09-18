@@ -10,6 +10,7 @@
     owner: '{{ datadog_user }}'
     group: '{{ datadog_group }}'
   notify: restart datadog-agent
+  become: yes
 
 - name: Ensure datadog-agent is running
   service:
@@ -17,6 +18,7 @@
     state: started
     enabled: yes
   when: datadog_enabled
+  become: yes
 
 - name: Ensure datadog-agent is not running
   service:
@@ -24,6 +26,7 @@
     state: stopped
     enabled: no
   when: not datadog_enabled
+  become: yes
 
 - name: Create a configuration file for each Datadog check
   template:
@@ -33,6 +36,7 @@
     group: "{{ datadog_group }}"
   with_items: "{{ datadog_checks|list }}"
   notify: restart datadog-agent
+  become: yes
 
 - name: Create a check agent for each Datadog check
   copy:
@@ -42,5 +46,6 @@
     group: "{{ datadog_group }}"
   with_items: "{{ datadog_check_agents|list }}"
   notify: restart datadog-agent
+  become: yes
 
 - include: app-specific.yml
