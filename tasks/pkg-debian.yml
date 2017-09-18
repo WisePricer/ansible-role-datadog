@@ -49,6 +49,8 @@
     name: datadog-agent={{ datadog_agent_version }}
     state: present
     force: "{{ datadog_agent_allow_downgrade }}"
+  environment:
+    DD_INSTALL_ONLY: "{{ datadog_agent_install_only }}"
   when: datadog_agent_version != ""
   become: yes
 
@@ -56,5 +58,7 @@
   apt:
     name: datadog-agent
     state: latest
+  environment:
+    DD_INSTALL_ONLY: "{{ datadog_agent_install_only }}"
   when: datadog_agent_version == ""
   become: yes
