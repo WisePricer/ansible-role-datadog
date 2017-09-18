@@ -3,6 +3,7 @@
   apt:
     name: apt-transport-https
     state: present
+  become: yes
 
 - name: Install ubuntu apt-key server
   apt_key:
@@ -10,6 +11,7 @@
     keyserver=hkp://keyserver.ubuntu.com:80
     state=present
   when: datadog_apt_key_url_new is not defined
+  become: yes
 
 - name: Install Datadog apt-key
   apt_key:
@@ -17,6 +19,7 @@
     url={{ datadog_apt_key_url_new }}
     state=present
   when: datadog_apt_key_url_new is defined
+  become: yes
 
 - name: Ensure ubuntu apt-key server is present
   apt_key:
@@ -24,6 +27,7 @@
     keyserver=hkp://keyserver.ubuntu.com:80
     state=present
   when: datadog_apt_key_url is not defined
+  become: yes
 
 - name: Ensure Datadog apt-key is present
   apt_key:
@@ -31,12 +35,14 @@
     url={{ datadog_apt_key_url }}
     state=present
   when: datadog_apt_key_url is defined
+  become: yes
 
 - name: Ensure Datadog repository is up-to-date
   apt_repository:
     repo: '{{ datadog_apt_repo }}'
     state: present
     update_cache: yes
+  become: yes
 
 - name: Ensure pinned version of Datadog agent is installed
   apt:
@@ -44,9 +50,11 @@
     state: present
     force: "{{ datadog_agent_allow_downgrade }}"
   when: datadog_agent_version != ""
+  become: yes
 
 - name: Ensure Datadog agent is installed
   apt:
     name: datadog-agent
     state: latest
   when: datadog_agent_version == ""
+  become: yes
