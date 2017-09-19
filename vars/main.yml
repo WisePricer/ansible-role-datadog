@@ -1,6 +1,6 @@
 ---
 datadog_config:
-  tags: "{{ env }}, {{ service }}, {{ product }}, {{ role }}"
+  tags: "env:{{ env }}, service:{{ service }}, product:{{ product }}, role:{{ role }}"
   log_level: INFO
   apm_enabled: "false" # has to be set as a string
 
